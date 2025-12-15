@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  # ... (mongodb và mongo-express giữ nguyên) ...
+
+  my-java-app-service:
+    # ... (Cấu hình Java Backend) ...
+    # Cổng 8080
+
+  # Dịch vụ Frontend (React/Nginx)
+  frontend-web:
+    build:
+      context: . 
+      dockerfile: Dockerfile.frontend # Sử dụng Dockerfile mới tạo
+    container_name: frontend_container
+    ports:
+      - "80:80" # Ánh xạ cổng 80 ra Host để người dùng truy cập
+    depends_on:
+      - my-java-app-service # Phụ thuộc vào Backend để đảm bảo nó khởi động trước
+    # Nếu Frontend cần proxy tới Backend Java (8080)
+    # Cần cấu hình nginx.conf để proxy /api tới my-java-app-service:8080

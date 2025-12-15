@@ -1,0 +1,77 @@
+name: Full-Stack CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main 
+      - dev
+  pull_request: # CI sẽ chạy khi có PR
+    branches:
+      - main 
+      - dev 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    # Chỉ triển khai (Deploy) khi có lệnh push, không phải pull_request
+    if: github.event_name == 'push' 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      # 1. SETUP & BUILD BACKEND (JAVA/MAVEN)
+      - name: Setup Java 17 & Build Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - run: mvn clean install -DskipTests
+
+      # 2. DOCKER LOGIN
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 3. BUILD & PUSH BACKEND (Java)
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-java-app:latest
+          file: ./Dockerfile 
+
+      # 4. BUILD & PUSH FRONTEND (React/Vite)
+      - name: Build and Push Frontend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-react-app:latest
+          file: ./Dockerfile.frontend 
+          # Lưu ý: Dockerfile.frontend phải được cấu hình để build từ thư mục 'web/'
+
+      # 5. DEPLOY QUA SSH (Sử dụng logic từ file ci-cd.yml của bạn)
+      - name: Deploy Full-Stack to Remote Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Starting deployment..."
+            # 1. Đi đến thư mục triển khai (như trong file của bạn)
+            cd /path/to/your/deployment/folder/on/server
+            
+            # 2. Kéo Image mới nhất
+            docker pull ${{ secrets.DOCKER_USERNAME }}/my-java-app:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/my-react-app:latest
+            
+            # 3. Cập nhật và khởi động lại services
+            docker-compose up -d --force-recreate frontend-web my-java-app-service
+            
+            echo "Deployment finished."
