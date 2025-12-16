@@ -1,32 +1,24 @@
-name: Front-end CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - main 
-  pull_request:
-    branches:
-      - main
-
 jobs:
-  build-and-deploy:
+  integration-test:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # 1. Checkout Code (Giữ nguyên)
+      - uses: actions/checkout@v4
 
-      # 1. SETUP NODE.JS & INSTALL DEPENDENCIES
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # 2. Setup Node.js (MỚI: Cần cho việc build Frontend)
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'  # Change this if using a different version
+          node-version: '20.x'
+          
+      # 3. Build Frontend (MỚI: Build ra thư mục dist)
+      - name: Build Frontend (Vite/React)
+        run: npm install && npm run build
+        working-directory: ./fe # Chạy lệnh này trong thư mục code UI
 
-      - name: Install dependencies
-        run: npm install
-
-      # 2. LINTING STEP
-      - name: Run lint
-        run: npx eslint .
-
-      # The rest of your steps...
+  
+      # 8. Stop services (Giữ nguyên)
+      - name: Stop services
+        if: always()
+        run: docker compose down

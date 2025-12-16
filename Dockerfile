@@ -1,25 +1,28 @@
-# Dockerfile
-FROM node:18 AS build
+# --- Giai đoạn 1: Build Ứng dụng React/Vite ---
+FROM node:20-alpine AS build-stage
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
+# Sao chép và cài đặt dependencies
+COPY package.json .
+COPY package-lock.json .
 RUN npm install
 
-# Copy the rest of the application
+# Sao chép code và build
 COPY . .
-
-# Build the application
 RUN npm run build
 
-# Serve the application using a server (e.g., Nginx)
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+# --- Giai đoạn 2: Phục vụ Tệp tĩnh bằng Nginx ---
+FROM nginx:alpine AS production-stage
 
-# Expose port
+# Xóa cấu hình Nginx mặc định
+RUN rm -rf /etc/nginx/conf.d
+
+# Sao chép các tệp tĩnh đã build (thư mục 'dist')
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+# Mở cổng 80 (cổng HTTP mặc định của Nginx)
 EXPOSE 80
 
+# Chạy Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,20 +1,13 @@
 version: '3.8'
 services:
-  # ... (mongodb và mongo-express giữ nguyên) ...
+  # ... (các dịch vụ backend đã có)
 
-  my-java-app-service:
-    # ... (Cấu hình Java Backend) ...
-    # Cổng 8080
-
-  # Dịch vụ Frontend (React/Nginx)
-  frontend-web:
+  my-fe-app-service:
+    container_name: voicebe-frontend
     build:
-      context: . 
-      dockerfile: Dockerfile.frontend # Sử dụng Dockerfile mới tạo
-    container_name: frontend_container
+      context: ./fe  # HOẶC thay bằng đường dẫn thư mục code UI của bạn
+      dockerfile: Dockerfile
     ports:
-      - "80:80" # Ánh xạ cổng 80 ra Host để người dùng truy cập
+      - "3000:80"  # Truy cập FE qua http://localhost:3000
     depends_on:
-      - my-java-app-service # Phụ thuộc vào Backend để đảm bảo nó khởi động trước
-    # Nếu Frontend cần proxy tới Backend Java (8080)
-    # Cần cấu hình nginx.conf để proxy /api tới my-java-app-service:8080
+      - my-java-app-service # FE chỉ cần đợi BE khởi động (có thể bỏ nếu không cần)
