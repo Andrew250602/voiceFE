@@ -1,13 +1,16 @@
 version: '3.8'
+# Trong file docker-compose.yml
 services:
-  # ... (các dịch vụ backend đã có)
+  # ... my-java-app-service, mongodb...
 
   my-fe-app-service:
     container_name: voicebe-frontend
     build:
-      context: ./fe  # HOẶC thay bằng đường dẫn thư mục code UI của bạn
-      dockerfile: Dockerfile
+      context: .  # ĐÃ SỬA: Trỏ đến thư mục gốc
+      dockerfile: Dockerfile # File Dockerfile này cũng phải ở thư mục gốc
+      args:
+        VITE_API_URL: http://my-java-app-service:8080 
     ports:
-      - "3000:80"  # Truy cập FE qua http://localhost:3000
+      - "3000:80"
     depends_on:
-      - my-java-app-service # FE chỉ cần đợi BE khởi động (có thể bỏ nếu không cần)
+      - my-java-app-service

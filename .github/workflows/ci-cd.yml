@@ -14,16 +14,18 @@ jobs:
       # 1. Checkout Code (Giữ nguyên)
       - uses: actions/checkout@v4
 
-      # 2. Setup Node.js (MỚI: Cần cho việc build Frontend)
+     # ...
+      # 2. Setup Node.js (Giữ nguyên)
       - name: Set up Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           
-      # 3. Build Frontend (MỚI: Build ra thư mục dist)
+      # 3. Build Frontend (ĐÃ SỬA: Chạy trong thư mục gốc)
       - name: Build Frontend (Vite/React)
+        # Vì code FE (package.json) nằm ở thư mục gốc, không cần chỉ định working-directory
         run: npm install && npm run build
-        working-directory: ./fe # Chạy lệnh này trong thư mục code UI
+        # Bỏ dòng: working-directory: ./fe
 
   
       # 8. Stop services (Giữ nguyên)
