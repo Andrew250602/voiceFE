@@ -16,13 +16,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 1. SETUP NODE.JS & INSTALL DEPENDENCIES
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '18'  # Change this if using a different version
 
       - name: Install dependencies
         run: npm install
 
+      # 2. LINTING STEP
       - name: Run lint
         run: npx eslint .
+
+      # The rest of your steps...
