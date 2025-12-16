@@ -6,7 +6,7 @@ import { HashRouter } from 'react-router-dom' // SỬ DỤNG HashRouter
 import React from 'react'
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <HashRouter basename="/voiceFE"> {/* SỬ DỤNG HashRouter */}
+    <HashRouter> {/* SỬ DỤNG HashRouter */}
       <App />
     </HashRouter>
   </React.StrictMode>,
