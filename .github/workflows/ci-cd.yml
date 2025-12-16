@@ -27,7 +27,18 @@ jobs:
         run: npm install && npm run build
         # Bỏ dòng: working-directory: ./fe
 
-  
+      # 5. Khởi động dịch vụ Frontend
+      - name: Start Frontend Service ONLY
+        # Sử dụng file docker-compose.yml và chỉ khởi động dịch vụ FE
+        run: docker compose up -d my-fe-app-service
+
+        # 6. Kiểm tra Giao diện đã khởi động
+      - name: Test Frontend Accessibility
+        run: |
+          # Chờ một chút để Nginx trong container khởi động
+          sleep 5 
+          # Kiểm tra xem cổng 3000 có trả về HTTP 200 OK không
+          curl --fail http://localhost:3000 || (echo "Frontend failed to load on port 3000" && exit 1)
       # 8. Stop services (Giữ nguyên)
       - name: Stop services
         if: always()
