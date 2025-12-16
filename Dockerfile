@@ -1,37 +1,25 @@
-# --- GIAI ĐOẠN 1: BUILD REACT ---
-# Sử dụng Image Node.js để chạy lệnh npm install và npm run build
-FROM node:20-alpine AS build
+# Dockerfile
+FROM node:18 AS build
 
-# Đặt thư mục làm việc (Giả sử source React nằm trong thư mục 'web/')
-WORKDIR /app/web
+WORKDIR /app
 
-# 1. COPY file cấu hình để cài đặt dependencies
-# COPY web/package*.json ./ <-- Cần chỉ rõ COPY từ context build (thư mục gốc)
-COPY web/package*.json ./
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# 2. Cài đặt các dependencies
-# Bước này tận dụng Docker cache nếu package*.json không thay đổi
+# Install dependencies
 RUN npm install
 
-# 3. COPY toàn bộ mã nguồn Frontend còn lại
-# Đặt sau npm install để đảm bảo mọi thay đổi code đều kích hoạt build lại
-COPY web/. .
+# Copy the rest of the application
+COPY . .
 
-# 4. Chạy lệnh build (tạo ra các file tĩnh trong thư mục 'dist' mặc định)
+# Build the application
 RUN npm run build
 
-# --- GIAI ĐOẠN 2: PHỤC VỤ BẰNG NGINX ---
-# Sử dụng Image Nginx nhẹ để phục vụ các file tĩnh
+# Serve the application using a server (e.g., Nginx)
 FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Xóa cấu hình mặc định của Nginx
-RUN rm -rf /etc/nginx/conf.d
-
-# Copy các file tĩnh đã build từ giai đoạn 'build' vào thư mục phục vụ của Nginx
-COPY --from=build /app/web/dist /usr/share/nginx/html
-
-# Mở cổng 80 (cổng HTTP mặc định của Nginx)
+# Expose port
 EXPOSE 80
 
-# Chạy Nginx
 CMD ["nginx", "-g", "daemon off;"]
