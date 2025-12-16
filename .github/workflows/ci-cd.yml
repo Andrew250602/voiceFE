@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline cho Frontend UI
 
 on:
   push:
@@ -7,39 +7,37 @@ on:
     branches: [main]
 
 jobs:
-  integration-test:
+  deploy-frontend-only:
     runs-on: ubuntu-latest
     
     steps:
-      # 1. Checkout Code (Giữ nguyên)
       - uses: actions/checkout@v4
 
-     # ...
-      # 2. Setup Node.js (Giữ nguyên)
+      # 1. Setup Node.js (Cần để build Vite/React)
       - name: Set up Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           
-      # 3. Build Frontend (ĐÃ SỬA: Chạy trong thư mục gốc)
+      # 2. Build Frontend (Tạo thư mục 'dist' chứa các file tĩnh)
       - name: Build Frontend (Vite/React)
-        # Vì code FE (package.json) nằm ở thư mục gốc, không cần chỉ định working-directory
-        run: npm install && npm run build
-        # Bỏ dòng: working-directory: ./fe
+        run: npm install && npm run build 
 
-      # 5. Khởi động dịch vụ Frontend
+      # 3. Khởi động Dịch vụ Frontend (Container)
       - name: Start Frontend Service ONLY
-        # Sử dụng file docker-compose.yml và chỉ khởi động dịch vụ FE
+        # Lệnh này chỉ khởi động my-fe-app-service, bỏ qua các dịch vụ BE
         run: docker compose up -d my-fe-app-service
-
-        # 6. Kiểm tra Giao diện đã khởi động
-      - name: Test Frontend Accessibility
+        
+      # 4. Kiểm tra Truy cập UI (Xác nhận giao diện đã "vào được")
+      - name: Test Frontend Accessibility (HTTP 200 Check)
         run: |
-          # Chờ một chút để Nginx trong container khởi động
+          echo "Waiting 5 seconds for Nginx to start..."
           sleep 5 
-          # Kiểm tra xem cổng 3000 có trả về HTTP 200 OK không
-          curl --fail http://localhost:3000 || (echo "Frontend failed to load on port 3000" && exit 1)
-      # 8. Stop services (Giữ nguyên)
+          # Kiểm tra HTTP 200 OK trên cổng 3000
+          curl --fail http://localhost:3000 || (echo "Frontend UI failed to load" && exit 1)
+          echo "Frontend UI is successfully deployed and accessible."
+          
+      # 5. Dọn dẹp
       - name: Stop services
         if: always()
         run: docker compose down

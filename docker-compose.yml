@@ -1,16 +1,18 @@
 version: '3.8'
 # Trong file docker-compose.yml
+# Trong file docker-compose.yml trên GitHub
 services:
-  # ... my-java-app-service, mongodb...
+  # Vẫn giữ định nghĩa các dịch vụ BE và DB (nhưng không khởi động)
+  # ... mongodb, my-java-app-service ...
 
   my-fe-app-service:
     container_name: voicebe-frontend
     build:
-      context: .  # ĐÃ SỬA: Trỏ đến thư mục gốc
-      dockerfile: Dockerfile # File Dockerfile này cũng phải ở thư mục gốc
+      context: .
+      dockerfile: Dockerfile
       args:
-        VITE_API_URL: http://my-java-app-service:8080 
+        # Giữ lại VITE_API_URL, nhưng dùng giá trị placeholder hoặc địa chỉ thật nếu có
+        VITE_API_URL: http://placeholder-api.com
     ports:
       - "3000:80"
-    depends_on:
-      - my-java-app-service
+    # DÒNG depends_on ĐÃ BỊ XÓA (để tránh lỗi undefined service)
