@@ -28,6 +28,11 @@ jobs:
         # Lệnh này chỉ khởi động my-fe-app-service
         run: docker compose up -d my-fe-app-service
         
+        # Trong file ci-cd.yml
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # Phải là thư mục 'dist'
       # 4. DEBUG: Kiểm tra trạng thái Container (RẤT QUAN TRỌNG ĐỂ TÌM LỖI)
       - name: Check Container Status (Debug)
         # Lệnh này liệt kê tất cả container, kể cả những container đã thoát (Exited)
