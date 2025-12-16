@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist' 
-
+          name: github-pages # <--- Đặt tên rõ ràng
   # =======================================================
   # JOB 2: DEPLOY (Job triển khai cuối cùng)
   # =======================================================
@@ -53,3 +53,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages # <--- Chỉ định artifact đã đặt tên
