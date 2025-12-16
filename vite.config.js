@@ -10,7 +10,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/voiceFE/',
+  base: './',
   // KHAI BÁO RÕ RÀNG THƯ MỤC OUTPUT
   build: {
     outDir: 'dist', // Đảm bảo output folder là 'dist'
