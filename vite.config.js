@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react({
@@ -10,9 +9,8 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/',
-  // KHAI BÁO RÕ RÀNG THƯ MỤC OUTPUT
+  base: './',
   build: {
-    outDir: 'dist', // Đảm bảo output folder là 'dist'
+    outDir: 'dist',
   }
 })
