@@ -27,12 +27,10 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          
+
       # 2. Build Frontend (Tạo thư mục 'dist')
       - name: Install dependencies and Build
         run: |
-          rm -rf dist
-          npm cache clean --force
           npm install
           npm run build
 
