@@ -27,6 +27,8 @@ jobs:
           npm cache clean --force
           npm install
           npm run build
+          echo "--- KIỂM TRA THƯ MỤC DIST ---"
+          ls -R dist
 
       # 3. Upload Artifact (Tải thư mục 'dist' lên GitHub)
       - name: Upload Pages Artifact
