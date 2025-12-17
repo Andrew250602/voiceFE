@@ -9,7 +9,7 @@ export default defineConfig({
     //   },
     }),
   ],
-  base: './',
+  base: '/voiceFE/',
   build: {
     outDir: 'dist',
   }

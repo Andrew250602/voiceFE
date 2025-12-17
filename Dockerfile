@@ -12,9 +12,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# 🚨 LỆNH KIỂM TRA TẠM THỜI 🚨
-RUN cat dist/index.html 
-RUN ls -l dist/assets
 
 FROM nginx:alpine AS production-stage
 

@@ -24,8 +24,10 @@ jobs:
       # 2. Build Frontend (Tạo thư mục 'dist')
       - name: Install dependencies and Build
         run: |
+          npm cache clean --force
+          rm -rf dist
           npm install
-          npm run build
+          npm run Build
 
       # 3. Upload Artifact (Tải thư mục 'dist' lên GitHub)
       - name: Upload Pages Artifact
