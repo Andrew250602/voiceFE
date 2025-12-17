@@ -24,6 +24,7 @@ jobs:
       # 2. Build Frontend (Tạo thư mục 'dist')
       - name: Install dependencies and Build
         run: |
+          npm cache clean --force
           npm install
           npm run build
 
