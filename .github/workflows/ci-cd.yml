@@ -49,8 +49,9 @@ jobs:
       - name: 2. Start Backend Lab (Docker)
         run: |
           cd backend-dir
-          docker-compose up -d
-
+          # Đã sửa thành 'docker compose' để tránh lỗi command not found
+          docker compose up -d
+          
       - name: 3. Test Connection
         run: |
           echo "Đang kiểm tra kết nối tới Backend..."
