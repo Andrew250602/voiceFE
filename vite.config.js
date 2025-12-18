@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [
     react()
   ],
-  base: '/voiceFE/',
+  base: '/voiceFE/', // tên Repository trên GitHub
   build: {
-    outDir: 'dist',
+    outDir: 'dist', // Thư mục đầu ra
   }
 })
