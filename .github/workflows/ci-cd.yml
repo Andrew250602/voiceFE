@@ -1,30 +1,30 @@
-name: Deploy Frontend UI to GitHub Pages
+name: CI/CD Frontend and Integration Lab
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: 
+  workflow_dispatch:
 
-# Thêm quyền hạn ở đây
 permissions:
   contents: read
   pages: write
   id-token: write
 
 jobs:
+  # JOB 1: BUILD FRONTEND
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout Code Frontend
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm' # Tự động cache node_modules để build nhanh hơn
+          cache: 'npm'
 
-      - name: Install dependencies and Build
+      - name: Install and Build
         run: |
           npm install
           npm run build
@@ -34,8 +34,32 @@ jobs:
         with:
           path: './dist'
 
-  deploy:
+  # JOB 2: CHẠY LAB VỚI BACKEND (Chỉ chạy khi Build xong)
+  integration-test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout Backend (Repo B)
+        uses: actions/checkout@v4
+        with:
+          repository: Andrew250602/voiceBE
+          token: ${{ secrets.MY_PAT }}
+          path: backend-dir
+
+      - name: 2. Start Backend Lab (Docker)
+        run: |
+          cd backend-dir
+          docker-compose up -d
+
+      - name: 3. Test Connection
+        run: |
+          echo "Đang kiểm tra kết nối tới Backend..."
+          # Đợi tối đa 60s cho Backend khởi động
+          timeout 60s bash -c 'until curl -s http://localhost:8080/api/health; do sleep 5; done' || (echo "Backend 403 hoặc không phản hồi" && docker ps -a)
+
+  # JOB 3: DEPLOY (Chỉ chạy khi cả Build và Test Lab đều thành công)
+  deploy:
+    needs: [build, integration-test] # Cần cả 2 job trước thành công
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -1,23 +1,23 @@
-name: Pull environment for Integration Tests
+# name: Pull environment for Integration Tests
 
-on:
-  push:
-    branches: [main]
+# on:
+#   push:
+#     branches: [main]
 
 
-jobs:
-  build-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm run build
+# jobs:
+#   build-frontend:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: npm run build
       
-  integration-test:
-    needs: build # Chờ job trên xong mới chạy
-    runs-on: ubuntu-latest
-    steps:
-      - name: 2. Checkout Backend (Repo B)
-        uses: actions/checkout@v4
-        with:
-          repository: Andrew250602/voiceBE # Thay bằng tên repo B của bạn
-          token: ${{ secrets.MY_PAT }}               # Token PAT bạn đã tạo
-          path: backend-dir
+#   integration-test:
+#     needs: build # Chờ job trên xong mới chạy
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: 2. Checkout Backend (Repo B)
+#         uses: actions/checkout@v4
+#         with:
+#           repository: Andrew250602/voiceBE # Thay bằng tên repo B của bạn
+#           token: ${{ secrets.MY_PAT }}               # Token PAT bạn đã tạo
+#           path: backend-dir
