@@ -49,7 +49,10 @@ jobs:
       - name: 2. Start Backend Lab (Docker)
         run: |
           cd backend-dir
-          # Đã sửa thành 'docker compose' để tránh lỗi command not found
+          # BƯỚC QUAN TRỌNG: Build file JAR trước khi gọi Docker
+          mvn clean package -DskipTests
+          
+          # Sau đó mới chạy Docker Compose
           docker compose up -d
           
       - name: 3. Test Connection
