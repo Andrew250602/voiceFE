@@ -12,7 +12,7 @@ function App() {
   const callBackend = async () => {
     try {
       // Lưu ý: Dấu / ở cuối phải khớp với @GetMapping("/") trong Controller của bạn
-      const response = await fetch('http://localhost:8080/api/health/');
+      const response = await fetch('http://localhost:8080/api/health');
       const data = await response.text();
       setMessage(data);
     } catch (error) {
