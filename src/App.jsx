@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
-
+import axios from 'axios'
 function App() {
   const [count, setCount] = useState(0)
   // 1. Thêm state để lưu thông báo từ Backend
@@ -12,9 +12,8 @@ function App() {
   const callBackend = async () => {
     try {
       // Lưu ý: Dấu / ở cuối phải khớp với @GetMapping("/") trong Controller của bạn
-      const response = await fetch('https://andrew250602.github.io/api/health');
-      const data = await response.text();
-      setMessage(data);
+      const response = await axios.get('https://andrew250602.github.io/api/health');
+      setMessage(response.data);
     } catch (error) {
       console.error("Lỗi rồi:", error);
       setMessage("Không thể kết nối tới Backend!");
