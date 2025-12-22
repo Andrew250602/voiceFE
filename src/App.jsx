@@ -5,14 +5,10 @@ import './App.css'
 import axios from 'axios'
 function App() {
   const [count, setCount] = useState(0)
-  // 1. Thêm state để lưu thông báo từ Backend
   const [message, setMessage] = useState('')
-
-  // 2. Hàm gọi API
   const callBackend = async () => {
     try {
-      // Lưu ý: Dấu / ở cuối phải khớp với @GetMapping("/") trong Controller của bạn
-      const response = await axios.get('https://andrew250602.github.io/api/health');
+      const response = await axios.get('http://localhost:8080/api/health');
       setMessage(response.data);
     } catch (error) {
       console.error("Lỗi rồi:", error);
